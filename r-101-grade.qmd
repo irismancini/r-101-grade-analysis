@@ -78,3 +78,11 @@ grades |>
   
 
 ```
+
+### Q7: 
+
+```{r, message = FALSE}
+
+ggplot(grades, aes(x = Group, y = Exam)) + 
+  geom_boxplot(fill = "red", color = "blue") 
+```
