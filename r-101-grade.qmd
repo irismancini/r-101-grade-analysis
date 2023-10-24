@@ -41,3 +41,9 @@ exam_na <-  grades |>
 ```
 
 There are `r exam_na` students who didn't take the Exam.
+
+### Q.4 : 
+
+```{r}
+
+```
