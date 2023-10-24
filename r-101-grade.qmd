@@ -49,7 +49,7 @@ There are `r exam_na` students who didn't take the Exam.
 grades |> 
   drop_na(Exam) |>
 ggplot(aes(x = Exam)) + 
-  geom_histogram(binwidth = 4, fill = "lightblue", color = "white") + 
+  geom_bar(fill = "lightblue", color = "white") + 
   xlab("Grade at the Exam") + ylab("absolute frequencies") + 
   labs(title = "Distribution of the grades") + 
    theme(plot.title = element_text(hjust = 0.5))
@@ -58,6 +58,23 @@ ggplot(aes(x = Exam)) +
 
 ### Q5. 
 
-```{r}
+```{r, message = FALSE}
+group_df <- grades |>
+  group_by(Group) |>
+  summarise(N=n()) 
+group_df |>
+  knitr::kable()
+```
+
+### Q6 : 
+
+```{r, message = FALSE}
+
+grades |>
+  ggplot(aes(x=Group)) +
+  geom_bar() + 
+  labs(title = "Distribution of people in the group") + 
+  theme(plot.title = element_text(hjust = 0.5))
+  
 
 ```
