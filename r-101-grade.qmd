@@ -110,7 +110,7 @@ The group with the best exam average is group 21.
 
 2.  An other way of plotting the distribution :
 
-```{r}
+```{r, message = FALSE}
 ggplot(grades, aes(x = Exam, fill = Group)) + 
   geom_histogram(bins = 15) + 
   geom_rug(alpha = 0.5, linewidth = 1.5) + 
@@ -122,7 +122,7 @@ After eliminating the legend, which displays informations we already have access
 
 ### Q8.
 
-```{r}
+```{r, message = FALSE}
 n_group <- grades |>
   group_by(Group) |>
   summarise(exam_na = sum(is.na(Exam)))
@@ -144,3 +144,8 @@ ggplot(n_group, aes(x= factor(indexgroup2), y = exam_na, fill = Group)) +
 ```
 
 ### Q10 : 
+
+```{r, message = FALSE}
+
+
+```
