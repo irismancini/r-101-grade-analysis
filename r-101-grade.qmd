@@ -135,11 +135,14 @@ knitr::kable(n_group)
 
 ```{r}
 
+#je créer une variable qui me permet d'associer un numéro à chaque groupe, afin de faciliter la lisibilité du graphique ensuite
 n_group$indexgroup2 <- as.numeric(gsub("grp_", "", n_group$Group))
 
 ggplot(n_group, aes(x= factor(indexgroup2), y = exam_na, fill = Group)) + 
   geom_col() + 
-  ggtitle("Number of students who missed the Exam in each group") + 
+  ggtitle("Number of students who missed the Exam in each group") +
+  ylab("number of students") + 
+  xlab("Group number") +
   theme(plot.title  = element_text(hjust = 0.5), legend.position="none", strip.text = element_text(size = 10)) 
 ```
 
@@ -147,5 +150,22 @@ ggplot(n_group, aes(x= factor(indexgroup2), y = exam_na, fill = Group)) +
 
 ```{r, message = FALSE}
 
+grades_long_format <- grades |>
+  pivot_longer(
+   cols = -c(Id, Group), #les deux seules variables que l'on ne va pas transformer
+   names_to = "name", 
+   values_to = "value"
+  )
+```
 
+### Q11 : 
+
+```{r}
+
+id_exam_na <-  grades_long_format |>
+  group_by(Id)|>
+  summarise(NbExamsMissed = sum(is.na(value))) 
+
+id_exam_na |>
+  knitr::kable()
 ```
