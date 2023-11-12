@@ -16,14 +16,14 @@ library(vroom)
 library(stringr)
 ```
 
-### Q1.Data loading :
+### Question 1 - Data loading :
 
 ```{r, message = FALSE}
 
 grades <- vroom(here("grades.csv"))
 ```
 
-### Q.2.
+### Question 2 - 
 
 ```{r, message = FALSE, echo = FALSE}
 summarize <- grades |> 
@@ -34,7 +34,7 @@ summarize |>
   
 ```
 
-### Q.3 :
+### Question 3 - 
 
 ```{r, message = FALSE, echo = FALSE}
 exam_na <-  grades |>
@@ -44,7 +44,7 @@ exam_na <-  grades |>
 
 There are `r exam_na` students who didn't take the Exam.
 
-### Q.4 :
+### Question 4 -
 
 ```{r, message = FALSE}
 grades |> 
@@ -58,7 +58,7 @@ ggplot(aes(x = Exam)) +
 
 We can see that the distribution is more concentrated around lower values. There aren't a lot of students who got very good grades.
 
-### Q5.
+### Question 5 - 
 
 ```{r, message = FALSE}
 group_df <- grades |>
@@ -68,7 +68,7 @@ group_df |>
   knitr::kable()
 ```
 
-### Q6 :
+### Question 6 - 
 
 ```{r, message = FALSE}
 
@@ -89,11 +89,11 @@ grades |>
 
 The number of students per group is fairly evenly distributed
 
-### Q7:
+### Question 7 - 
 
 1st way of representing the distribution :
 
-```{r, message = FALSE}
+```{r, message = FALSE, warning = FALSE}
 
 #on attribue un numéro à chaque groupe (son index)
 grades2 <- grades |>
@@ -104,24 +104,27 @@ grades2 <- grades |>
   mutate(Group = factor(Group, levels = unique(Group[order(IndexGroup)])))
 
 ggplot(grades2, aes(x = Exam, y=Group, fill = Group)) +
-  geom_boxplot() + theme(legend.position="none")
+  geom_boxplot() + theme(legend.position="none") + 
+  ggtitle("distribution of exam scores by group") + 
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 The group with the best exam average is group 21.
 
 2.  An other way of plotting the distribution :
 
-```{r, message = FALSE}
+```{r, message = FALSE, warning = FALSE}
 ggplot(grades, aes(x = Exam, fill = Group)) + 
   geom_histogram(bins = 15) + 
   geom_rug(alpha = 0.5, linewidth = 1.5) + 
   theme(legend.position="none", strip.text = element_text(size = 10)) + 
+  ggtitle("distribution of exam scores by group") + 
   facet_wrap(~Group)
 ```
 
 After eliminating the legend, which displays informations we already have access to with the title of each graph in the facet_wrap, the whole graphical representation is more readible. We find again that students in the group 21 (which we saw had the better mean in the precedent graph), have grades that are more located around higher values of grades. It helps us understand better the information displayed in the boxplot.
 
-### Q8.
+### Question 8 - 
 
 ```{r, message = FALSE}
 n_group <- grades |>
@@ -132,7 +135,7 @@ knitr::kable(n_group)
 
 ```
 
-### Q9.
+### Question 9 - 
 
 ```{r}
 
@@ -147,7 +150,7 @@ ggplot(n_group, aes(x= factor(indexgroup2), y = exam_na, fill = Group, color = "
   theme(plot.title  = element_text(size = rel(0.9)), legend.position="none", strip.text = element_text(size = 10)) 
 ```
 
-### Q10 : 
+### Question 10 - 
 
 ```{r, message = FALSE}
 
@@ -159,19 +162,16 @@ grades_long_format <- grades |>
   )
 ```
 
-### Q11 : 
+### Question 11 - 
 
 ```{r}
 
 id_exam_na <-  grades_long_format |>
   group_by(Id)|>
   summarise(NbExamsMissed = sum(is.na(value))) 
-
-id_exam_na |>
-  knitr::kable()
 ```
 
-### Q12 : 
+### Question 12 - 
 
 ```{r, message = FALSE}
 
@@ -185,7 +185,7 @@ ggplot(id_exam_na, aes(x =NbExamsMissed)) +
   
 ```
 
-### Q13 : 
+### Question 13 - 
 
 ```{r, message = FALSE}
 
@@ -199,7 +199,7 @@ exam_na2 |>
 
 ```
 
-### Q14 : 
+### Question 14 - 
 
 ```{r, message = FALSE}
 
@@ -209,14 +209,12 @@ online_na <- grades_long_format |>
   group_by(Id) |>
   summarise(NbOfNa_online = sum(is.na(value)))
 
-online_na|>
-  knitr::kable()
   
 ```
 
-### Q15 : 
+### Question 15 -
 
-```{r, message = FALSE}
+```{r, message = FALSE, warning = FALSE}
 
 grades_na_online <- grades |>
   rowwise() |>
@@ -228,12 +226,12 @@ grades_na_online|>
   ylab("missing grades at the online test") +
   xlab("Exam score") + 
   ggtitle("exam score conditioned by the number of online missing grades") +
-  theme(plot.title = element_text(size = rel(0.8)))
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 We can clearly conclude that there is a strong correlation between missing online exams and having a bad grade at the exam. We don't know if there's a causal effect however.
 
-### Q16 : 
+### Question 16 - 
 
 ```{r, message = FALSE}
 
@@ -241,11 +239,9 @@ grades_na_online2 <- grades |>
   rowwise() |>
     mutate(OneOnlineNA = any(is.na(c_across(starts_with("Online_MCQ"))))) |>
   select(Id, OneOnlineNA)
-
-grades_na_online2
 ```
 
-### Q17 : 
+### Question 17 - 
 
 ```{r, message = FALSE}
 
@@ -258,12 +254,9 @@ percentage_tab <- grades_na_online3 |>
   mutate(nb_group = n()) |>
   mutate(P_missed = sum(OneOnlineNA)/nb_group*100) |>
   select(Group, P_missed)
-
-percentage_tab |>
-  knitr::kable()
 ```
 
-### Q18 : 
+### Question 18 - 
 
 ```{r, message = FALSE}
 
@@ -287,8 +280,10 @@ Représentation graphique :
 ggplot(whole_table, aes(x=average, y = P_missed)) +  geom_jitter(alpha = 0.03, width = 0.01, height = 0.01) + 
   ggtitle("Colleration between average exam score of each group and the % of students who missed at least one online test") + 
   ylab("% of students who missed at least one online test")+   xlab("average score at the exam of the group") + 
-   theme(plot.title = element_text(size = rel(0.5)), axis.title.y = element_text(size = 8)) 
+   theme(axis.title.y = element_text(size = 8), plot.title = element_text(size = rel(0.7))) 
 
     
   
 ```
+
+There is relationship between the groups who have a higher value of the share of students who missed at least one online test and the average score at the exam of the group.
