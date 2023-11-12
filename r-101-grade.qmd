@@ -13,6 +13,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(vroom)
+library(stringr)
 ```
 
 ### Q1.Data loading :
@@ -196,4 +197,19 @@ exam_na2 <- grades_long_format |>
 exam_na2 |>
   knitr::kable()
 
+```
+
+### Q14 : 
+
+```{r, message = FALSE}
+
+
+online_na <- grades_long_format |>
+  filter(str_starts(name, "Online_MCQ")) |>
+  group_by(Id) |>
+  summarise(NbOfNa_online = sum(is.na(value)))
+
+online_na|>
+  knitr::kable()
+  
 ```
