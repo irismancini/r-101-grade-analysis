@@ -185,3 +185,15 @@ ggplot(id_exam_na, aes(x =NbExamsMissed)) +
 ```
 
 ### Q13 : 
+
+```{r, message = FALSE}
+
+exam_na2 <- grades_long_format |> 
+  filter(name=="Exam") |>
+  group_by(Group) |>
+  summarise(NbOfStudentsMissing = sum(is.na(value))) 
+  
+exam_na2 |>
+  knitr::kable()
+
+```
