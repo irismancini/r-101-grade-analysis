@@ -15,14 +15,14 @@ library(ggplot2)
 library(vroom)
 ```
 
-### Q1.Data loading : 
+### Q1.Data loading :
 
 ```{r, message = FALSE}
 
 grades <- vroom(here("grades.csv"))
 ```
 
-### Q.2. 
+### Q.2.
 
 ```{r, message = FALSE, echo = FALSE}
 summarize <- grades |> 
@@ -33,7 +33,7 @@ summarize |>
   
 ```
 
-### Q.3 : 
+### Q.3 :
 
 ```{r, message = FALSE, echo = FALSE}
 exam_na <-  grades |>
@@ -43,20 +43,22 @@ exam_na <-  grades |>
 
 There are `r exam_na` students who didn't take the Exam.
 
-### Q.4 : 
+### Q.4 :
 
 ```{r, message = FALSE}
 grades |> 
   drop_na(Exam) |>
 ggplot(aes(x = Exam)) + 
   geom_bar(fill = "lightblue", color = "white") + 
-  xlab("Grade at the Exam") + ylab("absolute frequencies") + 
+  xlab("Grade at the Exam") + ylab("number of students") + 
   labs(title = "Distribution of the grades") + 
    theme(plot.title = element_text(hjust = 0.5))
   
 ```
 
-### Q5. 
+We can see that the distribution is more concentrated around lower values. There aren't a lot of students who got very good grades.
+
+### Q5.
 
 ```{r, message = FALSE}
 group_df <- grades |>
@@ -66,23 +68,63 @@ group_df |>
   knitr::kable()
 ```
 
-### Q6 : 
+### Q6 :
 
 ```{r, message = FALSE}
 
+#je crée une variable IndexGroup, qui prendra les valeurs des numéros de groupe pour rendre le graphique plus lisible
+grades$IndexGroup <- as.numeric(gsub("grp_", "", grades$Group))
+
 grades |>
-  ggplot(aes(x=Group)) +
+  ggplot(aes(x=factor(IndexGroup), fill = factor(IndexGroup))) + 
   geom_bar() + 
-  labs(title = "Distribution of people in the group") + 
-  theme(plot.title = element_text(hjust = 0.5))
+  labs(title = "Number of students in each group") + 
+  theme(plot.title = element_text(hjust = 0.5),  legend.position="none") + 
+  ylab("number of students") + 
+  xlab("group ID")
   
 
 ```
 
-### Q7: 
+The number of students per group is fairly evenly distributed
+
+### Q7:
+
+1st way of representing the distribution :
 
 ```{r, message = FALSE}
 
-ggplot(grades, aes(x = Group, y = Exam)) + 
-  geom_boxplot(fill = "red", color = "blue") 
+#on attribue un numéro à chaque groupe (son index)
+grades2 <- grades |>
+  mutate(IndexGroup = as.numeric(gsub("grp_", "", Group)))
+
+#on réordonne la variable Group selon la variable IndexGroup
+grades2 <- grades |>
+  mutate(Group = factor(Group, levels = unique(Group[order(IndexGroup)])))
+
+ggplot(grades2, aes(x = Exam, y=Group, fill = Group)) +
+  geom_boxplot()
+```
+
+The group with the best exam average is group 21.
+
+2.  An other way of plotting the distribution :
+
+```{r}
+ggplot(grades, aes(x = Exam, fill = Group)) + 
+  geom_histogram(bins = 15) + 
+  geom_rug(alpha = 0.5, linewidth = 1.5) + 
+  theme(legend.position="none", strip.text = element_text(size = 10)) + 
+  facet_wrap(~Group)
+```
+
+After eliminating the legend, which displays informations we already have access to with the title of each graph in the facet_wrap, the whole graphical representation is more readible. We find again that students in the group 21 (which we saw had the better mean in the precedent graph), have grades that are more located around higher values of grades. It helps us understand better the information displayed in the boxplot.
+
+### Q8. 
+
+```{r}
+na_count <- grades |>
+  group_by(Group) |>
+  sum(is.na(Exam))
+
 ```
