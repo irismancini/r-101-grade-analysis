@@ -120,11 +120,27 @@ ggplot(grades, aes(x = Exam, fill = Group)) +
 
 After eliminating the legend, which displays informations we already have access to with the title of each graph in the facet_wrap, the whole graphical representation is more readible. We find again that students in the group 21 (which we saw had the better mean in the precedent graph), have grades that are more located around higher values of grades. It helps us understand better the information displayed in the boxplot.
 
-### Q8. 
+### Q8.
 
 ```{r}
-na_count <- grades |>
+n_group <- grades |>
   group_by(Group) |>
-  sum(is.na(Exam))
+  summarise(exam_na = sum(is.na(Exam)))
+
+knitr::kable(n_group)
 
 ```
+
+### Q9.
+
+```{r}
+
+n_group$indexgroup2 <- as.numeric(gsub("grp_", "", n_group$Group))
+
+ggplot(n_group, aes(x= factor(indexgroup2), y = exam_na, fill = Group)) + 
+  geom_col() + 
+  ggtitle("Number of students who missed the Exam in each group") + 
+  theme(plot.title  = element_text(hjust = 0.5), legend.position="none", strip.text = element_text(size = 10)) 
+```
+
+### Q10 : 
