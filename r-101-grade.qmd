@@ -213,3 +213,18 @@ online_na|>
   knitr::kable()
   
 ```
+
+### Q15 : 
+
+```{r, message = FALSE}
+
+grades_na_online <- grades |>
+  rowwise() |>
+  mutate(NbOnlineMissed = sum(is.na(c_across(starts_with("Online_MCQ")))) )
+
+grades_na_online|> 
+  ggplot(aes(x = Exam)) +
+  geom_bar(binwidth = 1, fill = "skyblue", color = "darkblue")
+```
+
+We can clearly conclude that there is a strong correlation between missing online exams and having a bad grade at the exam. We don't know if there's a causal effect however.
