@@ -53,8 +53,7 @@ ggplot(aes(x = Exam)) +
   geom_bar(fill = "lightblue", color = "white") + 
   xlab("Grade at the Exam") + ylab("number of students") + 
   labs(title = "Distribution of the grades") + 
-   theme(plot.title = element_text(hjust = 0.5))
-  
+   theme(plot.title = element_text(hjust = 0.5)) 
 ```
 
 We can see that the distribution is more concentrated around lower values. There aren't a lot of students who got very good grades.
@@ -83,6 +82,7 @@ grades |>
   theme(plot.title = element_text(hjust = 0.5),  legend.position="none") + 
   ylab("number of students") + 
   xlab("group ID")
+
   
 
 ```
@@ -104,7 +104,7 @@ grades2 <- grades |>
   mutate(Group = factor(Group, levels = unique(Group[order(IndexGroup)])))
 
 ggplot(grades2, aes(x = Exam, y=Group, fill = Group)) +
-  geom_boxplot()
+  geom_boxplot() + theme(legend.position="none")
 ```
 
 The group with the best exam average is group 21.
@@ -144,7 +144,7 @@ ggplot(n_group, aes(x= factor(indexgroup2), y = exam_na, fill = Group, color = "
   ggtitle("Number of students who missed the Exam in each group") +
   ylab("number of students") + 
   xlab("Group number") +
-  theme(plot.title  = element_text(hjust = 0.5), legend.position="none", strip.text = element_text(size = 10)) 
+  theme(plot.title  = element_text(size = rel(0.9)), legend.position="none", strip.text = element_text(size = 10)) 
 ```
 
 ### Q10 : 
@@ -224,7 +224,11 @@ grades_na_online <- grades |>
 
 grades_na_online|> 
   ggplot(aes(x = Exam)) +
-  geom_bar(fill = "skyblue", color = "darkblue")
+  geom_bar(fill = "skyblue", color = "darkblue") + 
+  ylab("missing grades at the online test") +
+  xlab("Exam score") + 
+  ggtitle("exam score conditioned by the number of online missing grades") +
+  theme(plot.title = element_text(size = rel(0.8)))
 ```
 
 We can clearly conclude that there is a strong correlation between missing online exams and having a bad grade at the exam. We don't know if there's a causal effect however.
@@ -257,4 +261,34 @@ percentage_tab <- grades_na_online3 |>
 
 percentage_tab |>
   knitr::kable()
+```
+
+### Q18 : 
+
+```{r, message = FALSE}
+
+mean_exam <- grades |>
+  group_by(Group) |>
+  summarise(average = mean(Exam, na.rm = TRUE)) 
+
+```
+
+on voit que les élèves sont un peu nuls
+
+```{r, message = FALSE}
+
+whole_table <-  inner_join(percentage_tab, mean_exam, by="Group")
+```
+
+Représentation graphique :
+
+```{r, message = FALSE}
+
+ggplot(whole_table, aes(x=average, y = P_missed)) +  geom_jitter(alpha = 0.03, width = 0.01, height = 0.01) + 
+  ggtitle("Colleration between average exam score of each group and the % of students who missed at least one online test") + 
+  ylab("% of students who missed at least one online test")+   xlab("average score at the exam of the group") + 
+   theme(plot.title = element_text(size = rel(0.5)), axis.title.y = element_text(size = 8)) 
+
+    
+  
 ```
