@@ -240,3 +240,21 @@ grades_na_online2 <- grades |>
 
 grades_na_online2
 ```
+
+### Q17 : 
+
+```{r, message = FALSE}
+
+grades_na_online3 <- grades |>
+  rowwise() |>
+    mutate(OneOnlineNA = any(is.na(c_across(starts_with("Online_MCQ")))))
+
+percentage_tab <- grades_na_online3 |>
+  group_by(Group) |>
+  mutate(nb_group = n()) |>
+  mutate(P_missed = sum(OneOnlineNA)/nb_group*100) |>
+  select(Group, P_missed)
+
+percentage_tab |>
+  knitr::kable()
+```
