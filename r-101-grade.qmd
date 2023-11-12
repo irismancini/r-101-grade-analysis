@@ -138,7 +138,7 @@ knitr::kable(n_group)
 #je créer une variable qui me permet d'associer un numéro à chaque groupe, afin de faciliter la lisibilité du graphique ensuite
 n_group$indexgroup2 <- as.numeric(gsub("grp_", "", n_group$Group))
 
-ggplot(n_group, aes(x= factor(indexgroup2), y = exam_na, fill = Group)) + 
+ggplot(n_group, aes(x= factor(indexgroup2), y = exam_na, fill = Group, color = "orange")) + 
   geom_col() + 
   ggtitle("Number of students who missed the Exam in each group") +
   ylab("number of students") + 
@@ -169,3 +169,19 @@ id_exam_na <-  grades_long_format |>
 id_exam_na |>
   knitr::kable()
 ```
+
+### Q12 : 
+
+```{r, message = FALSE}
+
+ggplot(id_exam_na, aes(x =NbExamsMissed)) + 
+  geom_histogram(binwidth = 1, fill = "skyblue", color = "black") + 
+  ggtitle("distribution of missing values of grades") +
+  ylab("number of students") + 
+  xlab("total number of missing values") + 
+  theme_minimal() + 
+  theme(plot.title = element_text(hjust = 0.5))
+  
+```
+
+### Q13 : 
