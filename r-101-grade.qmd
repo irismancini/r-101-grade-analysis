@@ -23,7 +23,7 @@ library(stringr)
 grades <- vroom(here("grades.csv"))
 ```
 
-### Question 2 - 
+### Question 2 -
 
 ```{r, message = FALSE, echo = FALSE}
 summarize <- grades |> 
@@ -34,7 +34,7 @@ summarize |>
   
 ```
 
-### Question 3 - 
+### Question 3 -
 
 ```{r, message = FALSE, echo = FALSE}
 exam_na <-  grades |>
@@ -58,7 +58,7 @@ ggplot(aes(x = Exam)) +
 
 We can see that the distribution is more concentrated around lower values. There aren't a lot of students who got very good grades.
 
-### Question 5 - 
+### Question 5 -
 
 ```{r, message = FALSE}
 group_df <- grades |>
@@ -68,7 +68,7 @@ group_df |>
   knitr::kable()
 ```
 
-### Question 6 - 
+### Question 6 -
 
 ```{r, message = FALSE}
 
@@ -89,7 +89,7 @@ grades |>
 
 The number of students per group is fairly evenly distributed
 
-### Question 7 - 
+### Question 7 -
 
 1st way of representing the distribution :
 
@@ -124,7 +124,7 @@ ggplot(grades, aes(x = Exam, fill = Group)) +
 
 After eliminating the legend, which displays informations we already have access to with the title of each graph in the facet_wrap, the whole graphical representation is more readible. We find again that students in the group 21 (which we saw had the better mean in the precedent graph), have grades that are more located around higher values of grades. It helps us understand better the information displayed in the boxplot.
 
-### Question 8 - 
+### Question 8 -
 
 ```{r, message = FALSE}
 n_group <- grades |>
@@ -135,7 +135,7 @@ knitr::kable(n_group)
 
 ```
 
-### Question 9 - 
+### Question 9 -
 
 ```{r}
 
@@ -150,7 +150,7 @@ ggplot(n_group, aes(x= factor(indexgroup2), y = exam_na, fill = Group, color = "
   theme(plot.title  = element_text(size = rel(0.9)), legend.position="none", strip.text = element_text(size = 10)) 
 ```
 
-### Question 10 - 
+### Question 10 -
 
 ```{r, message = FALSE}
 
@@ -162,7 +162,7 @@ grades_long_format <- grades |>
   )
 ```
 
-### Question 11 - 
+### Question 11 -
 
 ```{r}
 
@@ -171,7 +171,7 @@ id_exam_na <-  grades_long_format |>
   summarise(NbExamsMissed = sum(is.na(value))) 
 ```
 
-### Question 12 - 
+### Question 12 -
 
 ```{r, message = FALSE}
 
@@ -185,7 +185,7 @@ ggplot(id_exam_na, aes(x =NbExamsMissed)) +
   
 ```
 
-### Question 13 - 
+### Question 13 -
 
 ```{r, message = FALSE}
 
@@ -199,7 +199,7 @@ exam_na2 |>
 
 ```
 
-### Question 14 - 
+### Question 14 -
 
 ```{r, message = FALSE}
 
@@ -221,17 +221,13 @@ grades_na_online <- grades |>
   mutate(NbOnlineMissed = sum(is.na(c_across(starts_with("Online_MCQ")))) )
 
 grades_na_online|> 
-  ggplot(aes(x = Exam)) +
-  geom_bar(fill = "skyblue", color = "darkblue") + 
-  ylab("missing grades at the online test") +
-  xlab("Exam score") + 
-  ggtitle("exam score conditioned by the number of online missing grades") +
-  theme(plot.title = element_text(hjust = 0.5))
+  ggplot(aes(x = Exam, y = NbOnlineMissed)) +
+  geom_point(alpha = 0.2)
 ```
 
-We can clearly conclude that there is a strong correlation between missing online exams and having a bad grade at the exam. We don't know if there's a causal effect however.
+We can't really observe a correlation between the number of online test missed and the grades at the Exam.
 
-### Question 16 - 
+### Question 16 -
 
 ```{r, message = FALSE}
 
@@ -241,13 +237,13 @@ grades_na_online2 <- grades |>
   select(Id, OneOnlineNA)
 ```
 
-### Question 17 - 
+### Question 17 -
 
 ```{r, message = FALSE}
 
 grades_na_online3 <- grades |>
   rowwise() |>
-    mutate(OneOnlineNA = any(is.na(c_across(starts_with("Online_MCQ")))))
+    mutate(OneOnlineNA = any(is.na(c_across(starts_with("MCQ_")))))
 
 percentage_tab <- grades_na_online3 |>
   group_by(Group) |>
@@ -256,7 +252,7 @@ percentage_tab <- grades_na_online3 |>
   select(Group, P_missed)
 ```
 
-### Question 18 - 
+### Question 18 -
 
 ```{r, message = FALSE}
 
@@ -286,4 +282,4 @@ ggplot(whole_table, aes(x=average, y = P_missed)) +  geom_jitter(alpha = 0.03, w
   
 ```
 
-There is relationship between the groups who have a higher value of the share of students who missed at least one online test and the average score at the exam of the group.
+There is relationship between the groups who have a higher value of the share of students who missed at least one test and the average score at the exam of the group.
