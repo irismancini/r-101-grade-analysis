@@ -274,8 +274,8 @@ Représentation graphique :
 ```{r, message = FALSE}
 
 ggplot(whole_table, aes(x=average, y = P_missed)) +  geom_jitter(alpha = 0.03, width = 0.01, height = 0.01) + 
-  ggtitle("Colleration between average exam score of each group and the % of students who missed at least one online test") + 
-  ylab("% of students who missed at least one online test")+   xlab("average score at the exam of the group") + 
+  ggtitle("Colleration between average exam score of each group and the % of students who missed at least one test") + 
+  ylab("% of students who missed at least one test")+   xlab("average score at the exam of the group") + 
    theme(axis.title.y = element_text(size = 8), plot.title = element_text(size = rel(0.7))) 
 
     
